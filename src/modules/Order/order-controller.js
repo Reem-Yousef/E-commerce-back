@@ -308,3 +308,22 @@ export const cancelOrder = async (req, res, next) => {
     next(err);
   }
 };
+export const deleteOrder = async (req, res, next) => {
+  try {
+    if (!req.user?.id) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+    const { orderId } = req.params;
+    const order = await Order.findOne({ _id: orderId, user: req.user.id });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    if (order.deliveryStatus !== "pending") {
+      return res.status(400).json({ message: "Only pending orders can be deleted" });
+    }
+    await Order.findByIdAndDelete(orderId);
+    res.status(200).json({ success: true, message: "Order deleted successfully" });
+  } catch (err) {
+    next(err);
+  }
+};

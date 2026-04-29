@@ -22,6 +22,11 @@ app.use(express.json());
 
 db_connection();
 
+// ✅ Root route
+app.get("/", (req, res) => {
+  res.json({ message: "API is running ✅" });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/userInfo", userInfo);
 app.use("/api/products", productRoutes);
@@ -32,10 +37,8 @@ app.use("/api/reviews", reviewRoutes);
 
 app.use(errorHandler);
 
-// ✅ مهم للـ Vercel
 export default app;
 
-// ✅ للـ local dev بس
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 5000;
   const HOST = process.env.HOST || "127.0.0.1";

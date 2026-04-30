@@ -27,9 +27,19 @@ export const register = async (req, res, next) => {
     });
 
     await newUser.save();
-    res
-      .status(201)
-      .json({ message: "User registered successfully", userId: newUser._id });
+    // res
+    //   .status(201)
+    //   .json({ message: "User registered successfully", userId: newUser._id });
+    const token = jwt.sign(
+  { userId: newUser._id },
+  process.env.JWT_SECRET,
+  { expiresIn: "7d" }
+);
+
+res.status(201).json({
+  message: "User registered successfully",
+  token
+});
   } catch (error) {
     if (error.name === "ValidationError") {
       const messages = Object.values(error.errors).map((val) => val.message);
